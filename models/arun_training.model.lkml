@@ -7,8 +7,18 @@ datagroup: arun_training_default_datagroup {
   # sql_trigger: SELECT MAX(id) FROM etl_log;;
   max_cache_age: "1 hour"
 }
+datagroup: orders_datagroup {
+  label: "Orders Datagroup"
+  sql_trigger: SELECT MAX (id) from orders ;;
+  max_cache_age: "30 minutes"
+}
+datagroup: users_datagroup {
+  sql_trigger: SELECT MAX (id) from orders ;;
+  max_cache_age: "15 hours"
+}
 
 persist_with: arun_training_default_datagroup
+persist_with: orders_datagroup
 
 explore: billion_orders {
   join: orders {
@@ -139,13 +149,13 @@ explore: lrjp14_e1757972862083_testincrementalpdt {}
 explore: map_layer {}
 
 explore: orders {
+  persist_with: users_datagroup
   join: users {
     type: left_outer
     sql_on: ${orders.user_id} = ${users.id} ;;
     relationship: many_to_one
   }
 }
-
 explore: order_items {
   join: orders {
     type: left_outer
